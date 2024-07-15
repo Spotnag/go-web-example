@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go-web-example/handlers"
 	"html/template"
 	"io"
 	"net/http"
@@ -32,22 +33,14 @@ func main() {
 	e.Use(middleware.Recover())
 	//e.Use(middleware.CSRF()) // TODO FIX
 	e.Debug = true // TODO REMOVE IN PRODUCTION
-
 	e.Static("/images", "images")
 	e.Static("/css", "css")
 
 	g := e.Group("/admin")
 	g.Use(checkAuthMiddleware)
-	g.GET("/", func(c echo.Context) error {
 
-		return c.Render(200, "base.html", nil)
-	})
-
-	e.GET("/", func(c echo.Context) error {
-
-		return c.Render(200, "base.html", nil)
-	})
-	e.POST("/login", loginHandler)
+	e.GET("/", handlers.HandleHome)
+	e.POST("/login", handlers.HandleLoginIndex)
 	e.GET("/logout", logoutHandler)
 
 	e.Logger.Fatal(e.Start("localhost:3000")) // TODO REMOVE IN PRODUCTION
@@ -58,7 +51,7 @@ func checkAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		session, _ := store.Get(c.Request(), "session")
 		isAuthenticated := session.Values["authenticated"] == true
 		if !isAuthenticated {
-			return c.Redirect(http.StatusFound, "/")
+			return c.Redirect(http.StatusUnauthorized, "/")
 		}
 		c.Set("isAuthenticated", isAuthenticated)
 		return next(c)
@@ -85,7 +78,6 @@ func loginHandler(c echo.Context) error {
 		session.Save(c.Request(), c.Response())
 		return c.String(http.StatusOK, "Logged in successfully!")
 	}
-
 	return c.String(http.StatusUnauthorized, "Invalid username or password")
 }
 
