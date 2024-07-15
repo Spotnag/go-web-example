@@ -5,30 +5,28 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go-web-example/handlers"
-	"html/template"
-	"io"
 	"net/http"
 )
 
-type Template struct {
-	tmpl *template.Template
-}
-
-func newTemplate() *Template {
-	return &Template{
-		tmpl: template.Must(template.ParseGlob("views/*.html")),
-	}
-}
-
-func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	return t.tmpl.ExecuteTemplate(w, name, data)
-}
+//type Template struct {
+//	tmpl *template.Template
+//}
+//
+//func newTemplate() *Template {
+//	return &Template{
+//		tmpl: template.Must(template.ParseGlob("views/*.html")),
+//	}
+//}
+//
+//func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+//	return t.tmpl.ExecuteTemplate(w, name, data)
+//}
 
 var store = sessions.NewCookieStore([]byte("something-very-secret"))
 
 func main() {
 	e := echo.New()
-	e.Renderer = newTemplate()
+	//e.Renderer = newTemplate()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	//e.Use(middleware.CSRF()) // TODO FIX
