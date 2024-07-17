@@ -18,5 +18,6 @@ func Make(h HTTPHandler) http.HandlerFunc {
 }
 
 func Render(c echo.Context, cmp templ.Component) error {
+	slog.Info("%s", c.Request().Context())
 	return cmp.Render(c.Request().Context(), c.Response().Writer)
 }

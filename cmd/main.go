@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -34,9 +35,7 @@ func main() {
 	e.Static("/images", "images")
 	e.Static("/css", "css")
 
-	g := e.Group("/admin")
-	g.Use(checkAuthMiddleware)
-
+	e.Use(checkAuthMiddleware)
 	e.GET("/", handlers.HandleHome)
 	e.POST("/login", handlers.HandleLoginIndex)
 	e.GET("/logout", logoutHandler)
@@ -47,11 +46,18 @@ func main() {
 func checkAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		session, _ := store.Get(c.Request(), "session")
-		isAuthenticated := session.Values["authenticated"] == true
-		if !isAuthenticated {
-			return c.Redirect(http.StatusUnauthorized, "/")
+		isAuthenticated := session.Values["authenticated"]
+		if isAuthenticated == nil {
+			isAuthenticated = false
 		}
-		c.Set("isAuthenticated", isAuthenticated)
+		c.SetRequest(
+			c.Request().WithContext(
+				context.WithValue(
+					c.Request().Context(),
+					"isAuthenticated",
+					isAuthenticated),
+			),
+		)
 		return next(c)
 	}
 }
