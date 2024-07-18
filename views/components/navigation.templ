@@ -24,7 +24,11 @@ templ Navigation() {
                             </a>
                         </li>
                         <li><a>Settings</a></li>
-                        <li><a>Logout</a></li>
+                        <li><form action="/logout" method="POST">
+                                            <button type="submit" class="justify-between w-full text-left">
+                                                Logout
+                                            </button>
+                                        </form></li>
                     </ul>
                 </div>
             </div>

@@ -7,4 +7,4 @@ templ:
 	templ generate
 
 run:
-	templ generate --watch --proxy="http://localhost:3000" --open-browser=false
+	templ generate --watch --proxy="http://172.0.0.1:3000" --open-browser=false

@@ -37,8 +37,8 @@ func main() {
 
 	e.Use(checkAuthMiddleware)
 	e.GET("/", handlers.HandleHome)
-	e.POST("/login", handlers.HandleLoginIndex)
-	e.GET("/logout", logoutHandler)
+	e.POST("/login", loginHandler)
+	e.POST("/logout", logoutHandler)
 
 	e.Logger.Fatal(e.Start("localhost:3000")) // TODO REMOVE IN PRODUCTION
 }
@@ -46,7 +46,7 @@ func main() {
 func checkAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		session, _ := store.Get(c.Request(), "session")
-		isAuthenticated := session.Values["authenticated"]
+		isAuthenticated := session.Values["loggedIn"]
 		if isAuthenticated == nil {
 			isAuthenticated = false
 		}
@@ -54,7 +54,7 @@ func checkAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			c.Request().WithContext(
 				context.WithValue(
 					c.Request().Context(),
-					"isAuthenticated",
+					"isLoggedIn",
 					isAuthenticated),
 			),
 		)
@@ -71,7 +71,7 @@ func loginHandler(c echo.Context) error {
 		session, _ := store.Get(c.Request(), "session")
 
 		// Set user as authenticated
-		session.Values["authenticated"] = true
+		session.Values["loggedIn"] = true
 		session.Options = &sessions.Options{
 			Path:     "/",
 			MaxAge:   48 * 60 * 60, // 48 hours
@@ -82,6 +82,7 @@ func loginHandler(c echo.Context) error {
 		session.Save(c.Request(), c.Response())
 		return c.String(http.StatusOK, "Logged in successfully!")
 	}
+	//return c.String(http.StatusOK, "Logged in successfully!")
 	return c.String(http.StatusUnauthorized, "Invalid username or password")
 }
 
@@ -89,7 +90,7 @@ func logoutHandler(c echo.Context) error {
 	session, _ := store.Get(c.Request(), "session")
 
 	// Revoke users authentication
-	session.Values["authenticated"] = false
+	session.Values["loggedIn"] = false
 	session.Save(c.Request(), c.Response())
 	return c.String(http.StatusOK, "Logged out successfully!")
 }
