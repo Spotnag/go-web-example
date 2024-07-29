@@ -10,25 +10,16 @@ templ Index() {
             <div class="hero-content flex-col lg:flex-row-reverse">
                 <div class="text-center lg:text-left">
                     <h1 class="text-5xl font-bold">Login now!</h1>
-                    if ctx.Value("isAuthenticated") == false {
-                        <p class="py-6">You are not logged in</p>
-                    } else {
-                        <p class="py-6">You are logged in: </p>
-                    }
-                      <!-- have a button POST a click via AJAX -->
-                      <button hx-post="/login" hx-swap="innerHTML">
-                        Click Me
-                      </button>
 
                     <p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
                 </div>
-                <div id="test" class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100" hx-ext="response-targets">
-                    <form class="card-body" hx-post="/login" hx-target-401="#test" hx-target="#test" hx-swap="outerHTML">
+                <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100" hx-ext="response-targets">
+                    <form class="card-body" hx-post="/login" hx-target-401="#login-response" hx-target="#login-response">
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Email</span>
                             </label>
-                            <input type="text" name="username" placeholder="email" class="input input-bordered" required />
+                            <input type="email" name="username" placeholder="email" class="input input-bordered" required />
                         </div>
                         <div class="form-control">
                             <label class="label">
@@ -43,23 +34,9 @@ templ Index() {
                             <button class="btn btn-primary">Login</button>
                         </div>
                     </form>
-                    <div id="test">test</div>
+                    <div id="login-response"></div>
                 </div>
             </div>
         </div>
-<script>
-        document.addEventListener('htmx:afterRequest', e => {
-            console.log('PUT Success!')
-        });
-        document.addEventListener('htmx:beforeSwap', e => {
-            console.log('Before Swap!')
-        });
-        document.addEventListener('htmx:swapError', e => {
-            console.log('Swap Error!')
-        });
-        document.addEventListener('htmx:afterSwap', e => {
-            console.log('After Swap!')
-        });
-</script>
 	}
 }

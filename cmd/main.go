@@ -79,10 +79,13 @@ func loginHandler(c echo.Context) error {
 			Secure:   true,
 			SameSite: http.SameSiteStrictMode,
 		}
-		session.Save(c.Request(), c.Response())
+		err := session.Save(c.Request(), c.Response())
+		if err != nil {
+			c.Logger().Error(err)
+			return c.String(http.StatusInternalServerError, "An internal server error occurred")
+		}
 		return c.String(http.StatusOK, "Logged in successfully!")
 	}
-	//return c.String(http.StatusOK, "Logged in successfully!")
 	return c.String(http.StatusUnauthorized, "Invalid username or password")
 }
 

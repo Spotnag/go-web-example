@@ -42,22 +42,7 @@ func Index() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"hero min-h-screen bg-base-200\"><div class=\"hero-content flex-col lg:flex-row-reverse\"><div class=\"text-center lg:text-left\"><h1 class=\"text-5xl font-bold\">Login now!</h1>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			if ctx.Value("isAuthenticated") == false {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"py-6\">You are not logged in</p>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			} else {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"py-6\">You are logged in: </p>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- have a button POST a click via AJAX --><button hx-post=\"/login\" hx-swap=\"innerHTML\">Click Me</button><p class=\"py-6\">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p></div><div id=\"test\" class=\"card shrink-0 w-full max-w-sm shadow-2xl bg-base-100\" hx-ext=\"response-targets\"><form class=\"card-body\" hx-post=\"/login\" hx-target-401=\"#test\" hx-target=\"#test\" hx-swap=\"outerHTML\"><div class=\"form-control\"><label class=\"label\"><span class=\"label-text\">Email</span></label> <input type=\"text\" name=\"username\" placeholder=\"email\" class=\"input input-bordered\" required></div><div class=\"form-control\"><label class=\"label\"><span class=\"label-text\">Password</span></label> <input type=\"password\" name=\"password\" placeholder=\"password\" class=\"input input-bordered\" required> <label class=\"label\"><a href=\"#\" class=\"label-text-alt link link-hover\">Forgot password?</a></label></div><div class=\"form-control mt-6\"><button class=\"btn btn-primary\">Login</button></div></form><div id=\"test\">test</div></div></div></div><script>\r\n        document.addEventListener('htmx:afterRequest', e => {\r\n            console.log('PUT Success!')\r\n        });\r\n        document.addEventListener('htmx:beforeSwap', e => {\r\n            console.log('Before Swap!')\r\n        });\r\n        document.addEventListener('htmx:swapError', e => {\r\n            console.log('Swap Error!')\r\n        });\r\n        document.addEventListener('htmx:afterSwap', e => {\r\n            console.log('After Swap!')\r\n        });\r\n</script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"hero min-h-screen bg-base-200\"><div class=\"hero-content flex-col lg:flex-row-reverse\"><div class=\"text-center lg:text-left\"><h1 class=\"text-5xl font-bold\">Login now!</h1><p class=\"py-6\">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p></div><div class=\"card shrink-0 w-full max-w-sm shadow-2xl bg-base-100\" hx-ext=\"response-targets\"><form class=\"card-body\" hx-post=\"/login\" hx-target-401=\"#login-response\" hx-target=\"#login-response\"><div class=\"form-control\"><label class=\"label\"><span class=\"label-text\">Email</span></label> <input type=\"email\" name=\"username\" placeholder=\"email\" class=\"input input-bordered\" required></div><div class=\"form-control\"><label class=\"label\"><span class=\"label-text\">Password</span></label> <input type=\"password\" name=\"password\" placeholder=\"password\" class=\"input input-bordered\" required> <label class=\"label\"><a href=\"#\" class=\"label-text-alt link link-hover\">Forgot password?</a></label></div><div class=\"form-control mt-6\"><button class=\"btn btn-primary\">Login</button></div></form><div id=\"login-response\"></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

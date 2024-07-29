@@ -34,6 +34,17 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		if ctx.Value("isLoggedIn") == false {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"py-6\">You are not logged in</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"py-6\">You are logged in: </p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
 		templ_7745c5c3_Err = components.Navigation().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -46,7 +57,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<footer><footer class=\"footer p-10 bg-base-200 text-base-content\"><nav><h6 class=\"footer-title\">Services</h6><a class=\"link link-hover\">Branding</a> <a class=\"link link-hover\">Design</a> <a class=\"link link-hover\">Marketing</a> <a class=\"link link-hover\">Advertisement</a></nav><nav><h6 class=\"footer-title\">Company</h6><a class=\"link link-hover\">About us</a> <a class=\"link link-hover\">Contact</a> <a class=\"link link-hover\">Jobs</a> <a class=\"link link-hover\">Press kit</a></nav><nav><h6 class=\"footer-title\">Legal</h6><a class=\"link link-hover\">Terms of use</a> <a class=\"link link-hover\">Privacy policy</a> <a class=\"link link-hover\">Cookie policy</a></nav><form><h6 class=\"footer-title\">Newsletter</h6><fieldset class=\"form-control w-80\"><label class=\"label\"><span class=\"label-text\">Enter your email address</span></label><div class=\"join\"><input type=\"text\" placeholder=\"username@site.com\" class=\"input input-bordered join-item\"> <button class=\"btn btn-primary join-item\">Subscribe</button></div></fieldset></form></footer></footer></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<footer><footer class=\"footer p-10 bg-base-200 text-base-content\"><nav><h6 class=\"footer-title\">Services</h6><a class=\"link link-hover\">Branding</a> <a class=\"link link-hover\">Design</a> <a class=\"link link-hover\">Marketing</a> <a class=\"link link-hover\">Advertisement</a></nav><nav><h6 class=\"footer-title\">Company</h6><a class=\"link link-hover\">About us</a> <a class=\"link link-hover\">Contact</a> <a class=\"link link-hover\">Jobs</a> <a class=\"link link-hover\">Press kit</a></nav><nav><h6 class=\"footer-title\">Legal</h6><a class=\"link link-hover\">Terms of use</a> <a class=\"link link-hover\">Privacy policy</a> <a class=\"link link-hover\">Cookie policy</a></nav><form><h6 class=\"footer-title\">Newsletter</h6><fieldset class=\"form-control w-80\"><label class=\"label\"><span class=\"label-text\">Enter your email address</span></label><div class=\"join\"><input type=\"text\" placeholder=\"username@site.com\" class=\"input input-bordered join-item\"> <button class=\"btn btn-primary join-item\">Subscribe</button></div></fieldset></form></footer></footer></body><script>\r\n        document.addEventListener('htmx:afterRequest', e => {\r\n            console.log('PUT Success!')\r\n        });\r\n        document.addEventListener('htmx:beforeSwap', e => {\r\n            console.log('Before Swap!')\r\n        });\r\n        document.addEventListener('htmx:swapError', e => {\r\n            console.log('Swap Error!')\r\n        });\r\n        document.addEventListener('htmx:afterSwap', e => {\r\n            console.log('After Swap!')\r\n        });\r\n    </script></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
