@@ -6,6 +6,5 @@ import (
 )
 
 func HandleLoginIndex(c echo.Context) error {
-	//return auth.Login().Render(context.Background(), c.Response().Writer)
 	return Render(c, auth.Login())
 }

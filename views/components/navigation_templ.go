@@ -26,7 +26,23 @@ func Navigation() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<nav><div class=\"navbar bg-base-100\"><div class=\"flex-1\"><a class=\"btn btn-ghost text-xl\">Placeholder</a></div><div class=\"flex-none gap-2\"><div class=\"form-control\"><input type=\"text\" placeholder=\"Search\" class=\"input input-bordered w-24 md:w-auto\"></div><div class=\"dropdown dropdown-end\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost btn-circle avatar\"><div class=\"w-10 rounded-full\"><img alt=\"Tailwind CSS Navbar component\" src=\"https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg\"></div></div><ul tabindex=\"0\" class=\"mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52\"><li><a class=\"justify-between\">Profile <span class=\"badge\">New</span></a></li><li><a>Settings</a></li><li><form action=\"/logout\" method=\"POST\"><button type=\"submit\" class=\"justify-between w-full text-left\">Logout</button></form></li></ul></div></div></div></nav>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if ctx.Value("isLoggedIn") == false {
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if ctx.Value("isLoggedIn") == true {
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
