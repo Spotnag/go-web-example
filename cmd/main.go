@@ -54,7 +54,7 @@ func loginHandler(c echo.Context) error {
 	password := c.FormValue("password")
 
 	// Validate the username and password (this is just an example, in real application use hashed passwords)
-	if username == "admin" && password == "password" {
+	if username == "admin@admin" && password == "password" {
 		session, _ := store.Get(c.Request(), "session")
 
 		// Set user as authenticated
@@ -71,7 +71,9 @@ func loginHandler(c echo.Context) error {
 			c.Logger().Error(err)
 			return c.String(http.StatusInternalServerError, "An internal server error occurred")
 		}
-		return c.String(http.StatusOK, "Logged in successfully!")
+		c.Response().Header().Set("HX-Location", "/")
+		return c.String(http.StatusOK, "")
+		//return c.Redirect(http.StatusSeeOther, "/")
 	}
 	return c.String(http.StatusUnauthorized, "Invalid username or password")
 }
@@ -82,5 +84,5 @@ func logoutHandler(c echo.Context) error {
 	// Revoke users authentication
 	session.Values["loggedIn"] = false
 	session.Save(c.Request(), c.Response())
-	return c.String(http.StatusOK, "Logged out successfully!")
+	return c.Redirect(http.StatusSeeOther, "/")
 }
