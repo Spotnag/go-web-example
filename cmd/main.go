@@ -9,20 +9,6 @@ import (
 	"net/http"
 )
 
-//type Template struct {
-//	tmpl *template.Template
-//}
-//
-//func newTemplate() *Template {
-//	return &Template{
-//		tmpl: template.Must(template.ParseGlob("views/*.html")),
-//	}
-//}
-//
-//func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-//	return t.tmpl.ExecuteTemplate(w, name, data)
-//}
-
 var store = sessions.NewCookieStore([]byte("something-very-secret"))
 
 func main() {
@@ -37,6 +23,7 @@ func main() {
 
 	e.Use(checkAuthMiddleware)
 	e.GET("/", handlers.HandleHome)
+	e.GET("/login", handlers.HandleLoginIndex)
 	e.POST("/login", loginHandler)
 	e.POST("/logout", logoutHandler)
 
@@ -77,7 +64,7 @@ func loginHandler(c echo.Context) error {
 			MaxAge:   48 * 60 * 60, // 48 hours
 			HttpOnly: true,
 			Secure:   true,
-			SameSite: http.SameSiteStrictMode,
+			SameSite: http.SameSiteStrictMode, // TODO what are the differences here?
 		}
 		err := session.Save(c.Request(), c.Response())
 		if err != nil {
