@@ -12,21 +12,16 @@ templ Base() {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>GO-WEB-EXAMPLE</title>
+        <link rel="stylesheet" href="/css/index.css">
         <script src="https://unpkg.com/htmx.org@2.0.1" integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.5/dist/full.min.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="/css/index.css">
         <html data-theme="light"></html>
     </head>
 
     <body>
         <header>
-            if ctx.Value("isLoggedIn") == false {
-            <p class="py-6">You are not logged in</p>
-            } else {
-            <p class="py-6">You are logged in: </p>
-            }
             @components.Navigation()
         </header>
         { children... }
@@ -67,20 +62,5 @@ templ Base() {
             </footer>
         </footer>
     </body>
-    <script>
-        document.addEventListener('htmx:afterRequest', e => {
-            console.log('PUT Success!')
-        });
-        document.addEventListener('htmx:beforeSwap', e => {
-            console.log('Before Swap!')
-        });
-        document.addEventListener('htmx:swapError', e => {
-            console.log('Swap Error!')
-        });
-        document.addEventListener('htmx:afterSwap', e => {
-            console.log('After Swap!')
-        });
-    </script>
-
     </html>
 }
