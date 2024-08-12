@@ -5,6 +5,6 @@ import (
 	"go-web-example/views/home"
 )
 
-func HandleHome(c echo.Context) error {
+func (u *Handler) HandleHome(c echo.Context) error {
 	return Render(c, home.Index())
 }
