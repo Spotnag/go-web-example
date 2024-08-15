@@ -34,9 +34,7 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(handler.CheckLoggedInMiddleware)
 	//e.Use(middleware.CSRF()) // TODO FIX
-
 	e.HTTPErrorHandler = shared.CustomHTTPErrorHandler
-
 	e.Debug = true // TODO REMOVE IN PRODUCTION
 
 	e.Static("/images", "images")
