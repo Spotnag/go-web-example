@@ -13,6 +13,7 @@ templ Navigation() {
                 if ctx.Value("isLoggedIn") == false {
                 <a href="/login" hx-boost="true"  class="btn btn-ghost">Login</a>
                 }
+
                 if ctx.Value("isLoggedIn") == true {
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">

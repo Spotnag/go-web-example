@@ -16,6 +16,29 @@ func (u *Handler) LoginIndex(c echo.Context) error {
 	return Render(c, auth.Login())
 }
 
+func (u *Handler) RegisterIndex(c echo.Context) error {
+	return Render(c, auth.Register())
+}
+
+func (u *Handler) Register(c echo.Context) error {
+	username := c.FormValue("username")
+	password := c.FormValue("password")
+
+	// Check if the user already exists
+	_, err := u.DataService.GetUser(username)
+	if err == nil {
+		return echo.NewHTTPError(http.StatusConflict, "User already exists")
+	}
+
+	// Create the user
+	_, err = u.DataService.CreateUser(username, password)
+	if err != nil {
+		return err
+	}
+
+	return shared.HXRedirect(c, "/")
+}
+
 func (u *Handler) Login(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
@@ -43,12 +66,10 @@ func (u *Handler) Login(c echo.Context) error {
 		return err
 	}
 	return shared.HXRedirect(c, "/")
-
 }
 
 func (u *Handler) Logout(c echo.Context) error {
 	session, _ := store.Get(c.Request(), "session")
-
 	// Revoke users authentication
 	session.Values["loggedIn"] = false
 	if err := session.Save(c.Request(), c.Response()); err != nil {

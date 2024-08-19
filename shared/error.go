@@ -19,3 +19,7 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 		c.Logger().Error(err)
 	}
 }
+
+func MissingRouteHandler(c echo.Context) error {
+	return c.HTML(http.StatusNotFound, "404 Page does not exist...")
+}

@@ -36,14 +36,17 @@ func main() {
 	//e.Use(middleware.CSRF()) // TODO FIX
 	e.HTTPErrorHandler = shared.CustomHTTPErrorHandler
 	e.Debug = true // TODO REMOVE IN PRODUCTION
+	e.RouteNotFound("/*", shared.MissingRouteHandler)
 
 	e.Static("/images", "images")
 	e.Static("/css", "css")
 
 	e.GET("/", handler.HandleHome)
 	e.GET("/login", handler.LoginIndex)
+	e.GET("/register", handler.RegisterIndex)
 	e.POST("/login", handler.Login)
 	e.POST("/logout", handler.Logout)
+	e.POST("/register", handler.Register)
 
 	e.Logger.Fatal(e.Start("localhost:3000")) // TODO REMOVE IN PRODUCTION
 }
