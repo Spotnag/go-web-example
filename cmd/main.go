@@ -48,5 +48,7 @@ func main() {
 	e.POST("/logout", handler.Logout)
 	e.POST("/register", handler.Register)
 
+	e.GET("/courses", handler.Course)
+
 	e.Logger.Fatal(e.Start("localhost:3000")) // TODO REMOVE IN PRODUCTION
 }

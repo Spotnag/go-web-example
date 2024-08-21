@@ -3,12 +3,18 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
+	"github.com/labstack/echo/v4"
 	"go-web-example/data"
 	"go-web-example/models"
+	"go-web-example/views/courses"
 	"net/http"
 )
 
 type CourseHandler struct {
+}
+
+func (u *Handler) Course(c echo.Context) error {
+	return Render(c, courses.Course())
 }
 
 func (c CourseHandler) ListCourses(w http.ResponseWriter, r *http.Request) {
