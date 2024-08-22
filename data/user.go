@@ -6,7 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (d *DataService) CreateUser(username, password string) (user *models.User, err error) {
+func (d *Service) CreateUser(username, password string) (user *models.User, err error) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
 	user = &models.User{
@@ -19,7 +19,7 @@ func (d *DataService) CreateUser(username, password string) (user *models.User, 
 	return
 }
 
-func (d *DataService) GetUser(username string) (user *models.User, err error) {
+func (d *Service) GetUser(username string) (user *models.User, err error) {
 	row := d.DB.QueryRow("select id, username, password from user where username = ?", username)
 	user = &models.User{}
 	err = row.Scan(&user.ID, &user.Username, &user.Password)
