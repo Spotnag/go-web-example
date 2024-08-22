@@ -13,7 +13,7 @@ func (u *Handler) Course(c echo.Context) error {
 	return Render(c, courses.Course())
 }
 
-func (u *Handler) GetCourses(w http.ResponseWriter, r *http.Request) {
+func (u *Handler) GetCourse(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Handler) CreateCourse(w http.ResponseWriter, r *http.Request) {

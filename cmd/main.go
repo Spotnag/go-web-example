@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go-web-example/api"
 	"go-web-example/data"
 	"go-web-example/handlers"
 	"go-web-example/shared"
@@ -19,7 +20,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	handler := handlers.NewHandlers(dataService)
+	apiService, err := api.NewApiService()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	handler := handlers.NewHandlers(dataService, apiService)
 
 	// TODO: Remove this in production - Create users table
 	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, username text, password text);")

@@ -1,22 +1,22 @@
 package data
 
 import (
-	"context"
-	"github.com/cloudflare/cloudflare-go"
 	"github.com/google/uuid"
-	"os"
+	"go-web-example/models"
 )
 
-// Maximum upload size for cloudflare is 200mb
-func (d *Service) uploadStandardVideo(location string) (err error, file cloudflare.StreamVideo) {
-	videoID := uuid.New().String()
-	ctx := context.Background()
+func (d *Service) CreateVideo(title, description, user, uploadedID string) (models.Video, error) {
+	video := models.Video{
+		ID:          uuid.New().String(),
+		Title:       title,
+		Description: description,
+		UploadedID:  uploadedID,
+		UploadedBy:  user,
+	}
 
-	file, err = c.API.StreamUploadVideoFile(ctx, cloudflare.StreamUploadFileParameters{
-		AccountID:         os.Getenv("CLOUDFLARE_ACCOUNT_ID"),
-		VideoID:           videoID,
-		FilePath:          location,
-		ScheduledDeletion: nil,
-	})
-	return
+	_, err := d.DB.Exec("insert into video (id, title, description) values (?, ?, ?)", video.ID, video.Title, video.Description)
+	if err != nil {
+		return models.Video{}, err
+	}
+	return video, err
 }

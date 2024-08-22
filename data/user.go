@@ -14,7 +14,6 @@ func (d *Service) CreateUser(username, password string) (user *models.User, err 
 		Username: username,
 		Password: string(hashedPassword),
 	}
-
 	_, err = d.DB.Exec("insert into user (id, username, password) values (?, ?, ?)", user.ID, user.Username, user.Password)
 	return
 }
