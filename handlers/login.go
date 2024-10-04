@@ -25,13 +25,13 @@ func (u *Handler) Register(c echo.Context) error {
 	password := c.FormValue("password")
 
 	// Check if the user already exists
-	_, err := u.DataService.GetUser(username)
+	_, err := u.data.GetUser(username)
 	if err == nil {
 		return echo.NewHTTPError(http.StatusConflict, "User already exists")
 	}
 
 	// Create the user
-	_, err = u.DataService.CreateUser(username, password)
+	_, err = u.data.CreateUser(username, password)
 	if err != nil {
 		return err
 	}
@@ -43,8 +43,10 @@ func (u *Handler) Login(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
+	u.mailgun.SendEmail()
+
 	// Check if the password is correct
-	targetUser, err := u.DataService.GetUser(username)
+	targetUser, err := u.data.GetUser(username)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Username")
 	}

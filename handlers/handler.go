@@ -6,13 +6,15 @@ import (
 )
 
 type Handler struct {
-	DataService *data.Service
-	APIService  *api.Service
+	data       *data.Service
+	cloudflare *api.CloudflareService
+	mailgun    *api.MailgunService
 }
 
-func NewHandlers(dataService *data.Service, apiService *api.Service) *Handler {
+func NewHandlers(dataService *data.Service, cloudflareService *api.CloudflareService, mailgun *api.MailgunService) *Handler {
 	return &Handler{
-		DataService: dataService,
-		APIService:  apiService,
+		data:       dataService,
+		cloudflare: cloudflareService,
+		mailgun:    mailgun,
 	}
 }

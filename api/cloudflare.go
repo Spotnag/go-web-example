@@ -4,26 +4,26 @@ import (
 	"context"
 	"github.com/cloudflare/cloudflare-go"
 	"github.com/google/uuid"
-	"os"
+	"go-web-example/config"
 	"path/filepath"
 )
 
-type Service struct {
-	API *cloudflare.API
+type CloudflareService struct {
+	cloudflare *cloudflare.API
 }
 
-func NewApiService() (*Service, error) {
-	api, err := cloudflare.NewWithAPIToken(os.Getenv("CLOUDFLARE_API_TOKEN"))
+func NewCloudflareService() (*CloudflareService, error) {
+	api, err := cloudflare.NewWithAPIToken(config.AppConfig.CloudflareAPIToken)
 	if err != nil {
 		return nil, err
 	}
-	return &Service{
-		API: api,
+	return &CloudflareService{
+		cloudflare: api,
 	}, nil
 }
 
 // Maximum upload size for cloudflare is 200mb
-func (d *Service) UploadStandardVideo(location string) (cloudflare.StreamVideo, error) {
+func (d *CloudflareService) UploadStandardVideo(location string) (cloudflare.StreamVideo, error) {
 	absPath, err := filepath.Abs(location)
 	if err != nil {
 		return cloudflare.StreamVideo{}, err
@@ -32,8 +32,8 @@ func (d *Service) UploadStandardVideo(location string) (cloudflare.StreamVideo, 
 	ctx := context.Background()
 	videoID := uuid.New().String()
 
-	file, err := d.API.StreamUploadVideoFile(ctx, cloudflare.StreamUploadFileParameters{
-		AccountID:         os.Getenv("CLOUDFLARE_ACCOUNT_ID"),
+	file, err := d.cloudflare.StreamUploadVideoFile(ctx, cloudflare.StreamUploadFileParameters{
+		AccountID:         config.AppConfig.CloudflareAccountID,
 		VideoID:           videoID,
 		FilePath:          absPath,
 		ScheduledDeletion: nil,

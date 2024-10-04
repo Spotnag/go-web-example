@@ -4,31 +4,36 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go-web-example/api"
+	"go-web-example/config"
 	"go-web-example/data"
 	"go-web-example/handlers"
 	"go-web-example/shared"
 	"log"
-	"os"
 )
 
 func main() {
-	os.Setenv("CLOUDFLARE_API_TOKEN", "vJPpC2AdUZeUb8B2nzSbZePe_UZ74DAlLzriGD9f")
-	os.Setenv("CLOUDFLARE_ACCOUNT_ID", "8b255e52c471b0801a25f6ecfc31ae07")
+
+	config.InitConfig()
 
 	dataService, err := data.NewDataService()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	apiService, err := api.NewApiService()
+	cloudflare, err := api.NewCloudflareService()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	handler := handlers.NewHandlers(dataService, apiService)
+	mailgun, err := api.NewMailgunService()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	handler := handlers.NewHandlers(dataService, cloudflare, mailgun)
 
 	// TODO: Remove this in production - Create users table
-	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, username text, password text);")
+	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, username text, password text, email text, permission text, department text, region text);")
 	if err != nil {
 		log.Fatalf("%q: %s\n", err)
 	}
