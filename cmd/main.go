@@ -32,7 +32,7 @@ func main() {
 	handler := handlers.NewHandlers(dataService, cloudflare, mailService)
 
 	// TODO: Remove this in production - Create users table
-	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, password text, email text, permission text, department text, region text);")
+	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, password text, email text, role_id text);")
 	if err != nil {
 		log.Fatalf("%q: %s\n", err)
 	}
