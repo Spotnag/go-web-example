@@ -12,10 +12,9 @@ import (
 )
 
 func main() {
-
 	config.InitConfig()
 
-	dataService, err := data.NewDataService()
+	dataService, err := data.NewDatabaseService()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,27 +24,39 @@ func main() {
 		log.Fatal(err)
 	}
 
-	mailgun, err := api.NewMailgunService()
+	mailService, err := api.NewMailgunService()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	handler := handlers.NewHandlers(dataService, cloudflare, mailgun)
+	handler := handlers.NewHandlers(dataService, cloudflare, mailService)
 
 	// TODO: Remove this in production - Create users table
-	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, username text, password text, email text, permission text, department text, region text);")
+	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, password text, email text, permission text, department text, region text);")
 	if err != nil {
 		log.Fatalf("%q: %s\n", err)
-	}
-	_, err = dataService.CreateUser("admin@time", "passtime")
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	// TODO: Remove this in production - Create courses table
 	_, err = dataService.DB.Exec("create table if not exists video (id text not null primary key, title text, description text, url text);")
 	if err != nil {
 		log.Fatalf("%q: %s\n", err)
+	}
+
+	// TODO: Remove this in production - Create courses table
+	_, err = dataService.DB.Exec("create table if not exists role (id text not null primary key, name text, permissions text);")
+	if err != nil {
+		log.Fatalf("%q: %s\n", err)
+	}
+
+	// TODO: Remove this in production - Create courses table
+	_, err = dataService.CreateRole("superadmin", []string{"ManageUsers", "ManageCourses", "AssignCourses", "ResetCredentials", "BulkUploadUsers", "ManageGroupUsers", "AssignGroupCourses", "ViewCourses"})
+	_, err = dataService.CreateRole("user", []string{"ViewCourses"})
+
+	// TODO: Remove this in production - Create courses table
+	_, err = dataService.CreateUser("admin@time", "passtime", "user")
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	//course := []*models.Course{

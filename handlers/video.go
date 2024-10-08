@@ -20,7 +20,7 @@ func (u *Handler) CreateVideo(c echo.Context) error {
 	//	return echo.NewHTTPError(http.StatusNotFound, "Failed to upload video")
 	//}
 	//
-	//u.data.CreateVideo(title, description)
+	//u.db.CreateVideo(title, description)
 	//
 	return nil
 }

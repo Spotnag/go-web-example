@@ -11,6 +11,7 @@ templ Navigation() {
                     <input type="text" placeholder="Search" class="input input-bordered w-24 md:w-auto" />
                 </div>
                 if ctx.Value("isLoggedIn") == false {
+                <a href="/register" hx-boost="true"  class="btn btn-ghost">Register</a>
                 <a href="/login" hx-boost="true"  class="btn btn-ghost">Login</a>
                 }
 

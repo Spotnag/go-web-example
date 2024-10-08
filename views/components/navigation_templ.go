@@ -31,7 +31,7 @@ func Navigation() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if ctx.Value("isLoggedIn") == false {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"/login\" hx-boost=\"true\" class=\"btn btn-ghost\">Login</a> ")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"/register\" hx-boost=\"true\" class=\"btn btn-ghost\">Register</a> <a href=\"/login\" hx-boost=\"true\" class=\"btn btn-ghost\">Login</a> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

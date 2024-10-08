@@ -9,7 +9,7 @@ type Service struct {
 	DB *sql.DB
 }
 
-func NewDataService() (*Service, error) {
+func NewDatabaseService() (*Service, error) {
 	db, err := sql.Open("sqlite3", "file::memory:?cache=shared")
 	if err != nil {
 		return nil, err

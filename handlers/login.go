@@ -21,17 +21,17 @@ func (u *Handler) RegisterIndex(c echo.Context) error {
 }
 
 func (u *Handler) Register(c echo.Context) error {
-	username := c.FormValue("username")
+	email := c.FormValue("email")
 	password := c.FormValue("password")
 
 	// Check if the user already exists
-	_, err := u.data.GetUser(username)
+	_, err := u.db.GetUser(email)
 	if err == nil {
 		return echo.NewHTTPError(http.StatusConflict, "User already exists")
 	}
 
 	// Create the user
-	_, err = u.data.CreateUser(username, password)
+	_, err = u.db.CreateUser(email, password, "user")
 	if err != nil {
 		return err
 	}
@@ -40,18 +40,16 @@ func (u *Handler) Register(c echo.Context) error {
 }
 
 func (u *Handler) Login(c echo.Context) error {
-	username := c.FormValue("username")
+	email := c.FormValue("email")
 	password := c.FormValue("password")
 
-	u.mailgun.SendEmail()
-
 	// Check if the password is correct
-	targetUser, err := u.data.GetUser(username)
+	targetUser, err := u.db.GetUser(email)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Username")
+		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Email")
 	}
-	if err = bcrypt.CompareHashAndPassword([]byte(targetUser.Password), []byte(password)); err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Password")
+	if err = bcrypt.CompareHashAndPassword([]byte(targetUser.PasswordHash), []byte(password)); err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid PasswordHash")
 	}
 
 	// Set user as authenticated
