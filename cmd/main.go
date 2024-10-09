@@ -50,23 +50,24 @@ func main() {
 	}
 
 	// TODO: Remove this in production - Create courses table
-	_, err = dataService.CreateRole("superadmin", []string{"ManageUsers", "ManageCourses", "AssignCourses", "ResetCredentials", "BulkUploadUsers", "ManageGroupUsers", "AssignGroupCourses", "ViewCourses"})
+	_, err = dataService.CreateRole("superadmin", []string{
+		"ManageUsers",
+		"ManageCourses",
+		"AssignCourses",
+		"ResetCredentials",
+		"BulkUploadUsers",
+		"ResetGroupCredentials",
+		"ManageGroupUsers",
+		"ViewCourses"})
 	_, err = dataService.CreateRole("user", []string{"ViewCourses"})
+	_, err = dataService.CreateRole("admin", []string{"ViewCourses", "AssignCourses", "ResetGroupCredentials", "BulkUploadUsers", "ManageGroupUsers"})
 
 	// TODO: Remove this in production - Create courses table
-	_, err = dataService.CreateUser("admin@time", "passtime", "user")
+	_, err = dataService.CreateUser("user@time", "passtime", "user")
+	_, err = dataService.CreateUser("admin@time", "passtime", "admin")
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//course := []*models.Course{
-	//	{
-	//		ID:            "1",
-	//		Title:         "Course 1",
-	//		Author:        "Author 1",
-	//		PublishedDate: "2021-01-01",
-	//	},
-	//}
 
 	e := echo.New()
 
@@ -83,13 +84,14 @@ func main() {
 	e.Static("/css", "css")
 
 	e.GET("/", handler.HandleHome)
-	e.GET("/login", handler.LoginIndex)
-	e.GET("/register", handler.RegisterIndex)
-	e.POST("/login", handler.Login)
+	e.GET("/login", handler.LoginIndex, handler.RedirectIfLoggedInMiddleware)
+	e.POST("/login", handler.Login, handler.RedirectIfLoggedInMiddleware)
+	e.GET("/register", handler.RegisterIndex, handler.RedirectIfLoggedInMiddleware)
+	e.POST("/register", handler.Register, handler.RedirectIfLoggedInMiddleware)
 	e.POST("/logout", handler.Logout)
-	e.POST("/register", handler.Register)
 
 	e.GET("/courses", handler.Course)
+	//e.GET("/")
 
 	e.Logger.Fatal(e.Start("localhost:3000")) // TODO REMOVE IN PRODUCTION
 }

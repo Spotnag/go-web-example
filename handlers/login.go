@@ -92,3 +92,17 @@ func (u *Handler) CheckLoggedInMiddleware(next echo.HandlerFunc) echo.HandlerFun
 		return next(c)
 	}
 }
+
+func (u *Handler) RedirectIfLoggedInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		session, _ := store.Get(c.Request(), "session")
+		isLoggedIn, ok := session.Values["loggedIn"].(bool)
+		if ok && isLoggedIn {
+			// User is logged in, redirect them to the home page or any other page
+			return c.Redirect(http.StatusFound, "/")
+		}
+
+		// Continue with the next handler if not logged in
+		return next(c)
+	}
+}
