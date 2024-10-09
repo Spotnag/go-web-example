@@ -31,7 +31,7 @@ func (u *Handler) Register(c echo.Context) error {
 	}
 
 	// Create the user
-	_, err = u.db.CreateUser(email, password, "user")
+	_, err = u.db.CreateUser(email, password, "user", "default")
 	if err != nil {
 		return err
 	}
@@ -49,12 +49,13 @@ func (u *Handler) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Email")
 	}
 	if err = bcrypt.CompareHashAndPassword([]byte(targetUser.PasswordHash), []byte(password)); err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid PasswordHash")
+		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Password")
 	}
 
 	// Set user as authenticated
 	session, _ := store.Get(c.Request(), "session")
 	session.Values["loggedIn"] = true
+	session.Values["role"] = targetUser.Role.Name
 	session.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   48 * 60 * 60, // 48 hours
@@ -93,13 +94,28 @@ func (u *Handler) CheckLoggedInMiddleware(next echo.HandlerFunc) echo.HandlerFun
 	}
 }
 
+func (u *Handler) CheckRoleMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		session, _ := store.Get(c.Request(), "session")
+		role := session.Values["role"]
+		if role == nil {
+			role = "default"
+		}
+		c.SetRequest(c.Request().WithContext(context.WithValue(
+			c.Request().Context(),
+			"role",
+			role)))
+		return next(c)
+	}
+}
+
 func (u *Handler) RedirectIfLoggedInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		session, _ := store.Get(c.Request(), "session")
 		isLoggedIn, ok := session.Values["loggedIn"].(bool)
 		if ok && isLoggedIn {
 			// User is logged in, redirect them to the home page or any other page
-			return c.Redirect(http.StatusFound, "/")
+			return shared.HXRedirect(c, "/")
 		}
 
 		// Continue with the next handler if not logged in

@@ -32,7 +32,7 @@ func main() {
 	handler := handlers.NewHandlers(dataService, cloudflare, mailService)
 
 	// TODO: Remove this in production - Create users table
-	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, password text, email text, role_id text);")
+	_, err = dataService.DB.Exec("create table if not exists user (id text not null primary key, password text, email text, role_id text, usergroup_id text);")
 	if err != nil {
 		log.Fatalf("%q: %s\n", err)
 	}
@@ -50,6 +50,12 @@ func main() {
 	}
 
 	// TODO: Remove this in production - Create courses table
+	_, err = dataService.DB.Exec("create table if not exists usergroup (id text not null primary key, name text);")
+	if err != nil {
+		log.Fatalf("%q: %s\n", err)
+	}
+
+	// TODO: Remove this in production - Create courses table
 	_, err = dataService.CreateRole("superadmin", []string{
 		"ManageUsers",
 		"ManageCourses",
@@ -61,13 +67,9 @@ func main() {
 		"ViewCourses"})
 	_, err = dataService.CreateRole("user", []string{"ViewCourses"})
 	_, err = dataService.CreateRole("admin", []string{"ViewCourses", "AssignCourses", "ResetGroupCredentials", "BulkUploadUsers", "ManageGroupUsers"})
-
-	// TODO: Remove this in production - Create courses table
-	_, err = dataService.CreateUser("user@time", "passtime", "user")
-	_, err = dataService.CreateUser("admin@time", "passtime", "admin")
-	if err != nil {
-		log.Fatal(err)
-	}
+	_, err = dataService.CreateUserGroup("default")
+	_, err = dataService.CreateUser("user@time", "passtime", "user", "default")
+	_, err = dataService.CreateUser("admin@time", "passtime", "admin", "default")
 
 	e := echo.New()
 
@@ -75,6 +77,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(handler.CheckLoggedInMiddleware)
+	e.Use(handler.CheckRoleMiddleware)
 	//e.Use(middleware.CSRF()) // TODO FIX
 	e.HTTPErrorHandler = shared.CustomHTTPErrorHandler
 	e.Debug = true // TODO REMOVE IN PRODUCTION

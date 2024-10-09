@@ -6,17 +6,23 @@ import (
 	"go-web-example/models"
 )
 
-func (d *Service) CreateRole(name string, permissions []string) (role *models.Role, err error) {
+func (d *Service) CreateRole(name string, permissions []string) (*models.Role, error) {
 	jsonPermissions, err := json.Marshal(permissions)
+	if err != nil {
+		return nil, err
+	}
 
-	role = &models.Role{
+	role := &models.Role{
 		ID:          uuid.New(),
 		Name:        name,
 		Permissions: permissions,
 	}
 
 	_, err = d.DB.Exec("insert into role (id, name, permissions) values (?, ?, ?)", role.ID, role.Name, string(jsonPermissions))
-	return
+	if err != nil {
+		return nil, err
+	}
+	return role, nil
 }
 
 func (d *Service) GetRole(name string) (*models.Role, error) {
