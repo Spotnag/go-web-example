@@ -11,7 +11,7 @@ func HXRedirect(c echo.Context, url string) error {
 		c.Response().WriteHeader(http.StatusSeeOther)
 		return nil
 	}
-	return c.Redirect(http.StatusSeeOther, "/")
+	return c.Redirect(http.StatusSeeOther, url)
 }
 
 func HXLocation(c echo.Context, url string) error {

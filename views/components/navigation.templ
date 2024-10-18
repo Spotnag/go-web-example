@@ -14,10 +14,6 @@ templ Navigation() {
                 <a href="/register" hx-boost="true"  class="btn btn-ghost">Register</a>
                 <a href="/login" hx-boost="true"  class="btn btn-ghost">Login</a>
                 }
-                if ctx.Value("role") != "user" {
-                <a href="/admin" hx-boost="true"  class="btn btn-ghost">Admin</a>
-                }
-
                 if ctx.Value("isLoggedIn") == true {
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
@@ -29,6 +25,11 @@ templ Navigation() {
                         <li>
                             <div>Profile</div>
                         </li>
+                        if ctx.Value("role") == "admin" {
+                        <li>
+                            <a href="/user/admin/manage-users" hx-boost="true">Manage Users</a>
+                        </li>
+                        }
                         <form action="/logout" method="post" hx-boost="true" class="justify-between w-full text-left">
                             <li>
                                 <button type="submit" >Logout</button>

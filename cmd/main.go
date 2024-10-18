@@ -76,17 +76,17 @@ func main() {
 	//e.Renderer = newTemplate()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(handler.CheckLoggedInMiddleware)
-	e.Use(handler.CheckRoleMiddleware)
+	e.Use(handler.CheckLoggedInAndRoleMiddleware)
 	//e.Use(middleware.CSRF()) // TODO FIX
 	e.HTTPErrorHandler = shared.CustomHTTPErrorHandler
 	e.Debug = true // TODO REMOVE IN PRODUCTION
-	e.RouteNotFound("/*", shared.MissingRouteHandler)
+	e.RouteNotFound("", shared.MissingRouteHandler)
 
 	e.Static("/images", "images")
 	e.Static("/css", "css")
 
-	e.GET("/", handler.HandleHome)
+	// Authentication
+	e.GET("", handler.HandleHome)
 	e.GET("/login", handler.LoginIndex, handler.RedirectIfLoggedInMiddleware)
 	e.POST("/login", handler.Login, handler.RedirectIfLoggedInMiddleware)
 	e.GET("/register", handler.RegisterIndex, handler.RedirectIfLoggedInMiddleware)
@@ -94,7 +94,17 @@ func main() {
 	e.POST("/logout", handler.Logout)
 
 	e.GET("/courses", handler.Course)
-	//e.GET("/")
+
+	// Authed routes
+	userGroup := e.Group("/user", handler.AuthenticationMiddleware)
+	userGroup.Any("/*", shared.MissingRouteHandler)
+	userGroup.Any("", shared.MissingRouteHandler)
+
+	// Admin routes
+	adminGroup := userGroup.Group("/admin", handler.RequireAdminMiddleware)
+	adminGroup.Any("/*", shared.MissingRouteHandler)
+	adminGroup.Any("", shared.MissingRouteHandler)
+	adminGroup.GET("/manage-users", handler.ManageUsers)
 
 	e.Logger.Fatal(e.Start("localhost:3000")) // TODO REMOVE IN PRODUCTION
 }

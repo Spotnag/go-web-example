@@ -72,39 +72,30 @@ func (u *Handler) Login(c echo.Context) error {
 func (u *Handler) Logout(c echo.Context) error {
 	session, _ := store.Get(c.Request(), "session")
 	// Revoke users authentication
-	session.Values["loggedIn"] = false
+	session.Options.MaxAge = -1
 	if err := session.Save(c.Request(), c.Response()); err != nil {
 		return err
 	}
 	return shared.HXRedirect(c, "/")
 }
 
-func (u *Handler) CheckLoggedInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func (u *Handler) CheckLoggedInAndRoleMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		session, _ := store.Get(c.Request(), "session")
-		isLoggedIn := session.Values["loggedIn"]
-		if isLoggedIn == nil {
+		isLoggedIn, exists := session.Values["loggedIn"]
+		if !exists {
 			isLoggedIn = false
 		}
-		c.SetRequest(c.Request().WithContext(context.WithValue(
-			c.Request().Context(),
-			"isLoggedIn",
-			isLoggedIn)))
-		return next(c)
-	}
-}
-
-func (u *Handler) CheckRoleMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		session, _ := store.Get(c.Request(), "session")
-		role := session.Values["role"]
-		if role == nil {
-			role = "default"
+		role, exists := session.Values["role"]
+		if !exists {
+			role = "user"
 		}
-		c.SetRequest(c.Request().WithContext(context.WithValue(
-			c.Request().Context(),
-			"role",
-			role)))
+
+		ctx := c.Request().Context()
+		ctx = context.WithValue(ctx, "isLoggedIn", isLoggedIn)
+		ctx = context.WithValue(ctx, "role", role)
+		c.SetRequest(c.Request().WithContext(ctx))
+
 		return next(c)
 	}
 }
@@ -119,6 +110,30 @@ func (u *Handler) RedirectIfLoggedInMiddleware(next echo.HandlerFunc) echo.Handl
 		}
 
 		// Continue with the next handler if not logged in
+		return next(c)
+	}
+}
+
+func (u *Handler) AuthenticationMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		session, _ := store.Get(c.Request(), "session")
+		isLoggedIn, ok := session.Values["loggedIn"].(bool)
+		if !ok || !isLoggedIn {
+			return shared.HXRedirect(c, "/login")
+		}
+
+		return next(c)
+	}
+}
+
+func (u *Handler) RequireAdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		session, _ := store.Get(c.Request(), "session")
+		role, ok := session.Values["role"].(string)
+		if !ok || role != "admin" {
+			return shared.MissingRouteHandler(c)
+		}
+
 		return next(c)
 	}
 }

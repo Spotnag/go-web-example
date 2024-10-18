@@ -6,9 +6,6 @@ import (
 	"net/http"
 )
 
-type CourseHandler struct {
-}
-
 func (u *Handler) Course(c echo.Context) error {
 	return Render(c, courses.Course())
 }
